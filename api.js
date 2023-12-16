@@ -1,6 +1,9 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = "prodMy";
+//НУЖНО ПОМЕНЯТЬ PERSONALKEY НА СВОЙ
+//"https://wedev-api.sky.pro";
+
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
@@ -65,6 +68,79 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
+    return response.json();
+  });
+}
+
+///////////////////////
+
+export function uploadPost({ token, imageUrl }) {
+  const descriptionElement = document.getElementById("description");
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description: descriptionElement.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      imageUrl,
+    }),
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 400) {
+      alert("Добавьте описание и фото");
+      throw new Error("Часть данных не заполнена");
+    } else {
+      return response.json();
+    }
+  });
+}
+
+export function addLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы поставить лайк");
+      throw new Error("Not authorized");
+    }
+    return response.json();
+  });
+}
+
+export function removeLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы убрать лайк");
+      throw new Error("Not authorized");
+    }
+    return response.json();
+  });
+}
+
+export function postDelete({ token, postId }) {
+  return fetch(`${postsHost}/${postId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы удалить пост");
+      throw new Error("Not authorized");
+    }
+
     return response.json();
   });
 }
