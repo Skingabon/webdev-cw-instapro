@@ -10,6 +10,7 @@ import {
   // renderApp,
 } from "../index.js";
 import { postDelete } from "../api.js";
+import { replaceFunction } from "../helpers.js";
 
 // export function renderPostsPageComponent({ appEl }) {
 //   // TODO: реализовать рендер постов из api
@@ -71,13 +72,6 @@ export function renderPostsPageComponent({ appEl }) {
     .map((post) => {
       const userStorage = JSON.parse(window.localStorage.getItem("user"));
       const userStorageId = userStorage ? userStorage._id : null;
-      const replaceFunction = (str) => {
-        return str
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;");
-      };
       return `
       <li class="post">
         <div class="post-header" data-user-id=${post.user.id}>
