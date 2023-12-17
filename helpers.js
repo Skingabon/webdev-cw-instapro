@@ -1,3 +1,6 @@
+import { getToken, posts, renderApp } from "./index.js";
+import { addLike, removeLike } from "./api.js";
+
 export function saveUserToLocalStorage(user) {
   window.localStorage.setItem("user", JSON.stringify(user));
 } //функция кладет в LocalStorage ключ USER и данные о нем (токен, логин, пароль и т.д) Заметь, что используется JSON.stringify, чтобы передаваемый объект превратить в JSON и положить в LocalStorage
@@ -21,3 +24,17 @@ export const replaceFunction = (str) => {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 };
+
+export function addLikePost(postId, index) {
+  if (posts[index].isLiked) {
+    removeLike({ token: getToken(), postId }).then(() => {
+      posts[index].isLiked = false;
+      renderApp();
+    });
+  } else {
+    addLike({ token: getToken(), postId }).then(() => {
+      posts[index].isLiked = true;
+      renderApp();
+    });
+  }
+}

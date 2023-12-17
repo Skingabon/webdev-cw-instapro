@@ -1,4 +1,4 @@
-import { getPosts, uploadPost } from "./api.js";
+import { getPosts, uploadPost, userPostsPage } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -15,15 +15,14 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { renderPostsUserComponent } from "./components/posts-user-component.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 
 export const getToken = () => {
-  const token = user
-    ? `Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k`
-    : undefined;
+  const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
 
@@ -33,6 +32,9 @@ export const logout = () => {
   goToPage(POSTS_PAGE);
 };
 
+export const setPosts = (newPosts) => {
+  posts = newPosts;
+};
 /**
  * Включает страницу приложения
  */
@@ -69,11 +71,22 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
+      page = LOADING_PAGE;
       // TODO: реализовать получение постов юзера из API
       console.log("Открываю страницу пользователя: ", data.userId);
-      page = USER_POSTS_PAGE;
-      posts = [];
-      return renderApp();
+      renderApp();
+      const userId = data.userId;
+
+      return userPostsPage({ token: getToken(), userId: userId })
+        .then((newPosts) => {
+          page = USER_POSTS_PAGE;
+          posts = newPosts;
+          renderApp();
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -85,7 +98,7 @@ export const goToPage = (newPage, data) => {
   throw new Error("страницы не существует");
 };
 
-const renderApp = () => {
+export const renderApp = () => {
   const appEl = document.getElementById("app");
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
@@ -132,8 +145,10 @@ const renderApp = () => {
 
   if (page === USER_POSTS_PAGE) {
     // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+
+    return renderPostsUserComponent({
+      appEl,
+    });
   }
 };
 

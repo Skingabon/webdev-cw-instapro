@@ -1,4 +1,7 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
+
+import { setPosts } from "../index.js";
+
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prodMy";
 //НУЖНО ПОМЕНЯТЬ PERSONALKEY НА СВОЙ
@@ -143,4 +146,30 @@ export function postDelete({ token, postId }) {
 
     return response.json();
   });
+}
+
+export function userPostsPage({ token, userId }) {
+  return fetch(`${postsHost}/user-posts/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 500) {
+        throw new Error("The server has failed");
+      } else if (response.status === 401) {
+        throw new Error("Not authorized");
+      } else {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      setPosts(data.posts);
+      return data.posts;
+    })
+    .catch((error) => {
+      alert("Something went wrong, try to enter again");
+      console.warn(error);
+    });
 }
