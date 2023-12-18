@@ -1,6 +1,12 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
+
+import { setPosts } from "../index.js";
+
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = "prodMy";
+//НУЖНО ПОМЕНЯТЬ PERSONALKEY НА СВОЙ
+//"https://wedev-api.sky.pro";
+
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
@@ -67,4 +73,103 @@ export function uploadImage({ file }) {
   }).then((response) => {
     return response.json();
   });
+}
+
+///////////////////////
+
+export function uploadPost({ token, imageUrl }) {
+  const descriptionElement = document.getElementById("description");
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description: descriptionElement.value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
+      imageUrl,
+    }),
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 400) {
+      alert("Добавьте описание и фото");
+      throw new Error("Часть данных не заполнена");
+    } else {
+      return response.json();
+    }
+  });
+}
+
+export function addLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы поставить лайк");
+      throw new Error("Not authorized");
+    }
+    return response.json();
+  });
+}
+
+export function removeLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы убрать лайк");
+      throw new Error("Not authorized");
+    }
+    return response.json();
+  });
+}
+
+export function postDelete({ token, postId }) {
+  return fetch(`${postsHost}/${postId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Авторизуйтесь, чтобы удалить пост");
+      throw new Error("Not authorized");
+    }
+
+    return response.json();
+  });
+}
+
+export function userPostsPage({ token, userId }) {
+  return fetch(`${postsHost}/user-posts/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 500) {
+        throw new Error("The server has failed");
+      } else if (response.status === 401) {
+        throw new Error("Not authorized");
+      } else {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      setPosts(data.posts);
+      return data.posts;
+    })
+    .catch((error) => {
+      alert("Something went wrong, try to enter again");
+      console.warn(error);
+    });
 }
