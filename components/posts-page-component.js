@@ -11,57 +11,13 @@ import {
 } from "../index.js";
 import { addLike, getPosts, postDelete, removeLike } from "../api.js";
 import { addLikePost, replaceFunction } from "../helpers.js";
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale'
 
-// export function renderPostsPageComponent({ appEl }) {
-//   // TODO: реализовать рендер постов из api
-//   console.log("Актуальный список постов:", posts);
-
-//   /**
-//    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-//    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-//    */
-//   const postHtml = posts
-//     .map((post) => {
-//       return `
-
-//       <li class="post">
-//         <div class="post-header" data-user-id=${post.user.id}>
-//             <img src=${post.user.imageUrl} class="post-header__user-image">
-//             <p class="post-header__user-name">${post.user.name}</p>
-//         </div>
-//         <div class="post-image-container">
-//           <img class="post-image" src=${post.imageUrl}>
-//         </div>
-//         <div class="post-likes">
-//           <button data-post-id=${post.id}
-//            class="like-button">
-//             <img src="./assets/images/like-active.svg">
-//           </button>
-//           <p class="post-likes-text">
-//             Нравится: <strong>${post.likes.length}</strong>
-//           </p>
-//         </div>
-//         <p class="post-text">
-//           <span class="user-name">${post.user.name}</span>
-//           ${post.description}
-//         </p>
-//         <p class="post-date">
-//           19 минут назад
-//         </p>
-//       </li>`;
-//     })
-//     .join("");
-
-//   const appHtml = `<div class="page-container">
-// <div class="header-container"></div>
-// <ul class="posts">
-//   ${postHtml}
-// </ul>
-// </div>`;
 ////////////////////////////////////////////////
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
+  // console.log("Актуальный список постов:", posts);
 
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
@@ -104,9 +60,10 @@ export function renderPostsPageComponent({ appEl }) {
           }
           </p>
           <div class="delete-button-container">
-          <button class="delete-button ${
-            !user ? "hidden" : ""
-          }" id="button-delete" data-post-id="${post.postId}">Удалить</button>
+          ${user ?
+          `<button class="delete-button"
+            id="button-delete">Удалить</button>` : ''
+          }
         </div>
 
         </div>
@@ -115,7 +72,9 @@ export function renderPostsPageComponent({ appEl }) {
           ${post.description}
         </p>
         <p class="post-date">
-        ${post.createdAt} назад
+        ${formatDistanceToNow(new Date(post.createdAt),
+          {locale: ru},
+      )} назад
         </p>
       </li>`;
     })
@@ -136,15 +95,28 @@ export function renderPostsPageComponent({ appEl }) {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
+      // console.log(user,"user");
+      // if (!user) {
+      //   alert("Сначала авторизуйтесь!");
+      //   return;
+      // }; 
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
+      
       });
+            
     });
   }
+
+
   likeEventListener({ token: getToken() });
   likeImageEventListener({ token: getToken() });
   postDeleteEventListener({ token: getToken() });
 }
+
+
+
+
 export function likeEventListener() {
   const likeButtons = document.querySelectorAll(".like-button");
 
@@ -170,7 +142,9 @@ export function likeImageEventListener() {
   });
 }
 
+
 export function postDeleteEventListener() {
+  if (!user) return;
   const deleteButtons = document.querySelectorAll(".delete-button");
   const likeButtons = document.querySelectorAll(".like-button");
 

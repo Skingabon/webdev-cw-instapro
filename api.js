@@ -1,6 +1,6 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 
-import { setPosts } from "../index.js";
+import { setPosts } from "./index.js";
 
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prodMy";
@@ -154,8 +154,7 @@ export function userPostsPage({ token, userId }) {
     headers: {
       Authorization: token,
     },
-  })
-    .then((response) => {
+  }).then((response) => {
       if (response.status === 500) {
         throw new Error("The server has failed");
       } else if (response.status === 401) {

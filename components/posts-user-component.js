@@ -11,11 +11,12 @@ import {
 } from "../index.js";
 import { addLike, getPosts, postDelete, removeLike } from "../api.js";
 import { addLikePost, replaceFunction } from "../helpers.js";
-
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale'
 ////////////////////////////////////////////////
 export function renderPostsUserComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
+  // console.log("Актуальный список постов:", posts);
 
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
@@ -69,7 +70,9 @@ export function renderPostsUserComponent({ appEl }) {
           ${post.description}
         </p>
         <p class="post-date">
-        ${post.createdAt} назад
+        ${formatDistanceToNow(new Date(post.createdAt),
+          {locale: ru},
+      )} назад
         </p>
       </li>`;
     })
@@ -90,6 +93,7 @@ export function renderPostsUserComponent({ appEl }) {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
+     
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });
@@ -99,6 +103,9 @@ export function renderPostsUserComponent({ appEl }) {
   likeImageEventListener({ token: getToken() });
   postDeleteEventListener({ token: getToken() });
 }
+
+
+
 export function likeEventListener() {
   const likeButtons = document.querySelectorAll(".like-button");
 
