@@ -73,7 +73,7 @@ export const goToPage = (newPage, data) => {
     if (newPage === USER_POSTS_PAGE) {
       page = LOADING_PAGE;
       // TODO: реализовать получение постов юзера из API
-      console.log("Открываю страницу пользователя: ", data.userId);
+      // console.log("Открываю страницу пользователя: ", data.userId);
       renderApp();
       const userId = data.userId;
 
@@ -85,7 +85,7 @@ export const goToPage = (newPage, data) => {
         })
         .catch((error) => {
           console.error(error);
-          console.log("попытка простмотра постов неавторизованному");
+          // console.log("попытка простмотра постов неавторизованному");
           goToPage(POSTS_PAGE);
         });
      }
@@ -129,7 +129,7 @@ export const renderApp = () => {
       appEl,
       onAddPostClick({ description, imageUrl }) {
         // TODO: реализовать добавление поста в API
-        console.log("Добавляю пост...", { description, imageUrl });
+        // console.log("Добавляю пост...", { description, imageUrl });
         uploadPost({
           token: getToken(),
           imageUrl,

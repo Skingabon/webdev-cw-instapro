@@ -1,6 +1,6 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 
-import { setPosts } from "../index.js";
+import { setPosts } from "./index.js";
 
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prodMy";
