@@ -47,10 +47,11 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     document.getElementById("add-button").addEventListener("click", () => {
       const description = document.getElementById("description").value;
-      onAddPostClick({
-        description: description,
-        imageUrl: imageUrl,
-      });
+
+      if (description === "" || imageUrl === "") {
+        alert("Добавьте описание и фото");
+      }
+      return;
     });
   };
 

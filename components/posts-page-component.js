@@ -95,11 +95,6 @@ export function renderPostsPageComponent({ appEl }) {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
-      // console.log(user,"user");
-      // if (!user) {
-      //   alert("Сначала авторизуйтесь!");
-      //   return;
-      // };
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });
@@ -152,7 +147,6 @@ export function postDeleteEventListener() {
           setPosts(response);
           renderApp();
         });
-        // renderApp();
       });
     });
   });

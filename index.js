@@ -85,10 +85,9 @@ export const goToPage = (newPage, data) => {
         })
         .catch((error) => {
           console.error(error);
-          // console.log("попытка простмотра постов неавторизованному");
           goToPage(POSTS_PAGE);
         });
-     }
+    }
 
     page = newPage;
     renderApp();
@@ -98,8 +97,6 @@ export const goToPage = (newPage, data) => {
 
   throw new Error("страницы не существует");
 };
-
-
 
 export const renderApp = () => {
   const appEl = document.getElementById("app");

@@ -1,10 +1,8 @@
-// Замени на свой, чтобы получить независимый от других набор данных.
-
 import { setPosts } from "./index.js";
 
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prodMy";
-//НУЖНО ПОМЕНЯТЬ PERSONALKEY НА СВОЙ
+
 //"https://wedev-api.sky.pro";
 
 const baseHost = "https://webdev-hw-api.vercel.app";
@@ -74,8 +72,6 @@ export function uploadImage({ file }) {
     return response.json();
   });
 }
-
-///////////////////////
 
 export function uploadPost({ token, imageUrl }) {
   const descriptionElement = document.getElementById("description");
@@ -154,7 +150,8 @@ export function userPostsPage({ token, userId }) {
     headers: {
       Authorization: token,
     },
-  }).then((response) => {
+  })
+    .then((response) => {
       if (response.status === 500) {
         throw new Error("The server has failed");
       } else if (response.status === 401) {
