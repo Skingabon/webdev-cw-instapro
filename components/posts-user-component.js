@@ -11,8 +11,8 @@ import {
 } from "../index.js";
 import { addLike, getPosts, postDelete, removeLike } from "../api.js";
 import { addLikePost, replaceFunction } from "../helpers.js";
-import { formatDistanceToNow } from 'date-fns';
-import { ru } from 'date-fns/locale'
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 ////////////////////////////////////////////////
 export function renderPostsUserComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -50,7 +50,7 @@ export function renderPostsUserComponent({ appEl }) {
           <p class="post-likes-text">
           Нравится: ${
             post.likes.length > 0
-              ? `${post.likes[post.likes.length - 1].name} ${
+              ? `${replaceFunction(post.likes[post.likes.length - 1].name)} ${
                   post.likes.length - 1 > 0
                     ? "и ещё " + (post.likes.length - 1)
                     : ""
@@ -66,13 +66,11 @@ export function renderPostsUserComponent({ appEl }) {
 
         </div>
         <p class="post-text">
-          <span class="user-name">${post.user.name}</span>
+          <span class="user-name">${replaceFunction(post.user.name)}</span>
           ${post.description}
         </p>
         <p class="post-date">
-        ${formatDistanceToNow(new Date(post.createdAt),
-          {locale: ru},
-      )} назад
+        ${formatDistanceToNow(new Date(post.createdAt), { locale: ru })} назад
         </p>
       </li>`;
     })
@@ -93,7 +91,6 @@ export function renderPostsUserComponent({ appEl }) {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
-     
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });
@@ -103,8 +100,6 @@ export function renderPostsUserComponent({ appEl }) {
   likeImageEventListener({ token: getToken() });
   postDeleteEventListener({ token: getToken() });
 }
-
-
 
 export function likeEventListener() {
   const likeButtons = document.querySelectorAll(".like-button");

@@ -1,4 +1,5 @@
 import { user } from "../index.js";
+import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
@@ -8,14 +9,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     const appHtml = `
     <div class="page-container">
   <div class="header-container"></div>
-
-  <div class="page-header">
-  <h1 class="logo">instapro</h1>
-  <button class="header-button add-or-login-button"></button>
-  <button title="${user.name}" class="header-button logout-button">Выйти</button>
-  </div>
-  </div>
-
 
   <div class="form">
     <h3 class="form-title">Добавить пост</h3>
@@ -41,6 +34,10 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     appEl.innerHTML = appHtml;
 
+    renderHeaderComponent({
+      element: document.querySelector(".header-container"),
+    });
+
     renderUploadImageComponent({
       element: document.querySelector(".upload-image-container"),
       onImageUrlChange(newImageUrl) {
@@ -59,19 +56,3 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
   render();
 }
-
-/* 
-
-<div class="page-header">
-<h1 class="logo">instapro</h1>
-<button class="header-button add-or-Login-button">
-  <div title="Добавить пост” class="add-post-sign"></div>
-</button>
-<button title="${user.name}" class="header-button logout-button">Выйти</button>
-</div> 
-
-
-
-<div class="upload-image"></div>
-
-*/
