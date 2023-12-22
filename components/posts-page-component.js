@@ -139,9 +139,7 @@ export function postDeleteEventListener() {
   deleteButtons.forEach((deleteButton, index) => {
     deleteButton.addEventListener("click", (event) => {
       event.stopPropagation();
-
       const postId = likeButtons[index].dataset.postId;
-
       postDelete({ token: getToken(), postId }).then(() => {
         getPosts({ token: getToken() }).then((response) => {
           setPosts(response);
