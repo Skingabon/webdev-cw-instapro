@@ -113,7 +113,8 @@ export function likeEventListener() {
     likeButton.addEventListener("click", (event) => {
       event.stopPropagation();
       const postId = likeButton.dataset.postId;
-      addLikePost(postId, index);
+
+      addLikePost(postId, index, getPosts);
     });
   });
 }
@@ -126,7 +127,7 @@ export function likeImageEventListener() {
     postImage.addEventListener("dblclick", (event) => {
       event.stopPropagation();
       const postId = likeButtons[index].dataset.postId;
-      addLikePost(postId, index);
+      addLikePost(postId, index, getPosts);
     });
   });
 }

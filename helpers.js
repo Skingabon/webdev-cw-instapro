@@ -1,5 +1,6 @@
-import { getToken, posts, renderApp } from "./index.js";
+import { getToken, goToPage, posts, renderApp, setPosts } from "./index.js";
 import { addLike, removeLike } from "./api.js";
+import { POSTS_PAGE } from "./routes.js";
 
 export function saveUserToLocalStorage(user) {
   window.localStorage.setItem("user", JSON.stringify(user));
@@ -25,16 +26,26 @@ export const replaceFunction = (str) => {
     .replaceAll('"', "&quot;");
 };
 
-export function addLikePost(postId, index) {
+export function addLikePost(postId, index, getPosts, userId = null) {
+  const propsToApi = userId ? {token: getToken(), userId} : {token: getToken() }
+  
   if (posts[index].isLiked) {
     removeLike({ token: getToken(), postId }).then(() => {
       posts[index].isLiked = false;
-      renderApp();
+      getPosts(propsToApi).then((newPosts) => {
+        setPosts(newPosts);
+        renderApp();
+      });
+      
     });
   } else {
     addLike({ token: getToken(), postId }).then(() => {
       posts[index].isLiked = true;
-      renderApp();
+      getPosts(propsToApi).then((newPosts) => {
+        setPosts(newPosts);
+        renderApp();
+      });
     });
   }
 }
+

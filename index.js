@@ -20,11 +20,15 @@ import { renderPostsUserComponent } from "./components/posts-user-component.js";
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
+export let userId = null;
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
+export const setUserId = (newUserId) => {
+  userId = newUserId;
+ };
 
 export const logout = () => {
   user = null;
@@ -77,6 +81,7 @@ export const goToPage = (newPage, data) => {
       renderApp();
       const userId = data.userId;
 
+      setUserId(userId);
       return userPostsPage({ token: getToken(), userId: userId })
         .then((newPosts) => {
           page = USER_POSTS_PAGE;

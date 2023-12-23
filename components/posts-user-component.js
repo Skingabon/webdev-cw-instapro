@@ -8,8 +8,9 @@ import {
   renderApp,
   user,
   setPosts,
+  userId,
 } from "../index.js";
-import { addLike, getPosts, postDelete, removeLike } from "../api.js";
+import { addLike, getPosts, postDelete, removeLike, userPostsPage } from "../api.js";
 import { addLikePost, replaceFunction } from "../helpers.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -108,7 +109,8 @@ export function likeEventListener() {
     likeButton.addEventListener("click", (event) => {
       event.stopPropagation();
       const postId = likeButton.dataset.postId;
-      addLikePost(postId, index);
+
+      addLikePost(postId, index, userPostsPage, userId);
     });
   });
 }
@@ -121,7 +123,8 @@ export function likeImageEventListener() {
     postImage.addEventListener("dblclick", (event) => {
       event.stopPropagation();
       const postId = likeButtons[index].dataset.postId;
-      addLikePost(postId, index);
+
+      addLikePost(postId, index, userPostsPage, userId);
     });
   });
 }
