@@ -11,8 +11,8 @@ import {
 } from "../index.js";
 import { addLike, getPosts, postDelete, removeLike } from "../api.js";
 import { addLikePost, replaceFunction } from "../helpers.js";
-import { formatDistanceToNow } from 'date-fns';
-import { ru } from 'date-fns/locale'
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 
 ////////////////////////////////////////////////
 export function renderPostsPageComponent({ appEl }) {
@@ -51,7 +51,7 @@ export function renderPostsPageComponent({ appEl }) {
           <p class="post-likes-text">
           Нравится: ${
             post.likes.length > 0
-              ? `${post.likes[post.likes.length - 1].name} ${
+              ? `${replaceFunction(post.likes[post.likes.length - 1].name)} ${
                   post.likes.length - 1 > 0
                     ? "и ещё " + (post.likes.length - 1)
                     : ""
@@ -60,21 +60,21 @@ export function renderPostsPageComponent({ appEl }) {
           }
           </p>
           <div class="delete-button-container">
-          ${user ?
-          `<button class="delete-button"
-            id="button-delete">Удалить</button>` : ''
+          ${
+            user
+              ? `<button class="delete-button"
+            id="button-delete">Удалить</button>`
+              : ""
           }
         </div>
 
         </div>
         <p class="post-text">
-          <span class="user-name">${post.user.name}</span>
+          <span class="user-name">${replaceFunction(post.user.name)}</span>
           ${post.description}
         </p>
         <p class="post-date">
-        ${formatDistanceToNow(new Date(post.createdAt),
-          {locale: ru},
-      )} назад
+        ${formatDistanceToNow(new Date(post.createdAt), { locale: ru })} назад
         </p>
       </li>`;
     })
@@ -95,27 +95,16 @@ export function renderPostsPageComponent({ appEl }) {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
-      // console.log(user,"user");
-      // if (!user) {
-      //   alert("Сначала авторизуйтесь!");
-      //   return;
-      // }; 
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
-      
       });
-            
     });
   }
-
 
   likeEventListener({ token: getToken() });
   likeImageEventListener({ token: getToken() });
   postDeleteEventListener({ token: getToken() });
 }
-
-
-
 
 export function likeEventListener() {
   const likeButtons = document.querySelectorAll(".like-button");
@@ -124,7 +113,8 @@ export function likeEventListener() {
     likeButton.addEventListener("click", (event) => {
       event.stopPropagation();
       const postId = likeButton.dataset.postId;
-      addLikePost(postId, index);
+
+      addLikePost(postId, index, getPosts);
     });
   });
 }
@@ -137,11 +127,10 @@ export function likeImageEventListener() {
     postImage.addEventListener("dblclick", (event) => {
       event.stopPropagation();
       const postId = likeButtons[index].dataset.postId;
-      addLikePost(postId, index);
+      addLikePost(postId, index, getPosts);
     });
   });
 }
-
 
 export function postDeleteEventListener() {
   if (!user) return;
@@ -151,15 +140,12 @@ export function postDeleteEventListener() {
   deleteButtons.forEach((deleteButton, index) => {
     deleteButton.addEventListener("click", (event) => {
       event.stopPropagation();
-
       const postId = likeButtons[index].dataset.postId;
-
       postDelete({ token: getToken(), postId }).then(() => {
         getPosts({ token: getToken() }).then((response) => {
           setPosts(response);
           renderApp();
         });
-        // renderApp();
       });
     });
   });
